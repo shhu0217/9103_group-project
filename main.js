@@ -3,6 +3,7 @@ let colorfulRings = [];
 let canvasSize = 1000; 
 let canvasScale = 1; 
 let ringNumbers = 10; 
+let lineWeight = 4; 
 
 function setup() {
   createCanvas(canvasSize, canvasSize, P2D);
@@ -23,6 +24,7 @@ function windowResized() {
 }
 
 function generateRandomRings() {
+  colorfulRings = [];
   for (let i = 0; i < ringNumbers; i++) {
     let x = random(canvasSize);
     let y = random(canvasSize);
