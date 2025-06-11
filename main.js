@@ -12,10 +12,11 @@ function setup() {
 }
 
 function draw() {
-  background(0);
+  background(27, 67, 102);
 
   showAllRings();
 }
+
 
 function windowResized() {
   let minWinSize = min(windowWidth, windowHeight);
@@ -23,6 +24,7 @@ function windowResized() {
   canvasScale = minWinSize / canvasSize;
 }
 
+//Randomly generate circle objects with varying positions and sizes
 function generateRandomRings() {
   colorfulRings = [];
   for (let i = 0; i < ringNumbers; i++) {
@@ -35,8 +37,10 @@ function generateRandomRings() {
   }
 }
 
+
 function showAllRings() {
   for (let ring of colorfulRings) {
     ring.show();
   }
 }
+
