@@ -1,12 +1,12 @@
 class ColorfulRing {
   constructor(x, y, size) {
-    this.xpos = x; 
-    this.ypos = y; 
-    this.size = size; 
+    this.xpos = x; // x position
+    this.ypos = y; // y position
+    this.size = size; // soze
 
-    //  Randomize the order of circle types
+    // Randomize the order of ring types
     this.typeOrder = shuffle([1, 2, 3]);
-    
+    // color palette
     this.colorPatterns = shuffle([
       " #1d1f73",
       " #3e9189",
@@ -20,10 +20,11 @@ class ColorfulRing {
     ]);
   }
 
-  //  Render the visual appearance of the ring
-  show() {
+  show(rotation = 0, scaleFactor = 1) {
     push();
     translate(this.xpos * canvasScale, this.ypos * canvasScale);
+    rotate(rotation);             // rotate
+    scale(scaleFactor);          // scale
 
     for (let i = 0; i < this.typeOrder.length; i++) {
       let scaling = 1 - (i + 1) / this.typeOrder.length;
@@ -40,28 +41,28 @@ class ColorfulRing {
     pop();
   }
 
-  //  Draw circle type 1
+  // draw type 1 circle effects (spotted circles)
   drawType1Circle(s) {
-    
+    // draw circle background
     stroke(this.colorPatterns[1]);
     strokeWeight(lineWeight);
     fill(this.colorPatterns[0]);
     circle(0, 0, s);
 
-    
+    // Drawing spots from the inside out, circle by circle
     noStroke();
     fill(this.colorPatterns[1]);
 
     let r = s / 2;
-    let sapcing = s * 0.04; 
+    let sapcing = s * 0.04; // Interval of each circle
     if (sapcing <= 0) return;
-    let circleNum = ceil(r / sapcing); 
-    let spotNum = s * 0.2; 
-    let spotDt = TWO_PI / spotNum; 
-    let offset = 0; 
+    let circleNum = ceil(r / sapcing); // numbers of circles
+    let spotNum = s * 0.2; // numbers of spots on each circle
+    let spotDt = TWO_PI / spotNum; // angle between spots
+    let offset = 0; // offset between spots
     let offsetDt = s * 0.1;
 
-    
+    // calculate the position of spots and draw
     for (let i = 0; i < circleNum - 1; i++) {
       offset += offsetDt;
       for (let j = 0; j < spotNum; j++) {
@@ -75,20 +76,20 @@ class ColorfulRing {
     }
   }
 
-  // Draw circle type 2: line segment pattern
+  // draw type 2 circle effects (line circles)
   drawType2Circle(s) {
-    // Draw the background color
+    // draw circle background
     stroke(this.colorPatterns[2]);
     strokeWeight(lineWeight);
     fill(this.colorPatterns[1]);
     circle(0, 0, s);
 
-    // Calculate line segments within the circle
-    let lineNum = s * 0.3; 
-    let lineDt = TWO_PI / lineNum; 
-    let linePath = []; 
-    let innerRadius = s * 0.25; 
-    let outterRadius = s * 0.45; 
+    // lines inside circles
+    let lineNum = s * 0.3; // numbers of the lines
+    let lineDt = TWO_PI / lineNum; // angle between lines
+    let linePath = []; // line path
+    let innerRadius = s * 0.25; // radius of the inner circle
+    let outterRadius = s * 0.45; // radius of the outter circle
 
     for (let i = 0; i < lineNum; i++) {
       let angle = i * lineDt;
@@ -102,7 +103,7 @@ class ColorfulRing {
       linePath.push({ x: outterx, y: outtery });
     }
 
-    // Draw line segments inside the circle
+    // draw lines inside circles
     stroke(this.colorPatterns[2]);
     strokeWeight(2);
     noFill();
@@ -113,18 +114,18 @@ class ColorfulRing {
     endShape(CLOSE);
   }
 
-  // Draw circle type 3: concentric ring pattern
+  // draw type 3 circle effects (concentric circles)
   drawType3Circle(s) {
-    
+    // draw circle background
     stroke(this.colorPatterns[3]);
     strokeWeight(lineWeight);
     fill(this.colorPatterns[2]);
     circle(0, 0, s);
 
-    
-    let sapcing = s * 0.1; 
+    // draw concentric circles
+    let sapcing = s * 0.1; //  Interval of each circle
     if (sapcing <= 0) return;
-    let circleNum = round(s / sapcing); 
+    let circleNum = round(s / sapcing); // circles' number
 
     for (let i = circleNum - 1; i >= 0; i--) {
       let raduis = i * sapcing;

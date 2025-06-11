@@ -1,44 +1,55 @@
-let colorfulRings = []; 
+let colorfulRings = []; // all colorfulrings
 
-let canvasSize = 1000; 
-let canvasScale = 1; 
-let ringNumbers = 100; 
-let minRadius = canvasSize * 0.2; 
-let maxRadius = canvasSize * 0.8; 
-let maxAttempts = 100000; 
-let lineWeight = 4; 
+let canvasSize = 1000; // set canvas size
+let canvasScale = 1; // canvas scaling according to the canvas size
+let ringNumbers = 100; // max number of randomly generated circles
+let minRadius = canvasSize * 0.2; // min radius possible
+let maxRadius = canvasSize * 0.8; // max radius possible
+let maxAttempts = 100000; // maximum number of attempts to generate circles
+let lineWeight = 4; // line weight
+let c1, c2; //2 different colors for background gradient
 
 function setup() {
   createCanvas(canvasSize, canvasSize, P2D);
   windowResized();
   generateRandomRings();
+  c1 = color(183,96,178); // blue
+  c2 = color(37,88,109); // purple
 }
 
 function draw() {
-  background(27, 67, 102);
-
+  //slowly shifting background gradient over time
+  let amt = map(sin(frameCount * 0.01), -1, 1, 0, 1);
+  let bg = lerpColor(c1, c2, amt);
+  background(bg);
   showAllRings();
 }
 
-//  Resize the canvas when the window is resized
+//resize the canvas as the window changes so that the canvas is always 1:1
 function windowResized() {
   let minWinSize = min(windowWidth, windowHeight);
   resizeCanvas(minWinSize, minWinSize);
   canvasScale = minWinSize / canvasSize;
 }
 
-// Randomly generate circle objects with varying positions and sizes
+function updateCanvasScale() {
+  //canvas scaling based on the ratio of the smaller side of the window to the size of the artwork
+  let minWinSize = min(windowWidth, windowHeight);
+  canvasScale = minWinSize / baseCanvasSize;
+}
+
+//randomly generate non-overlapping rings of different positions and sizes
 function generateRandomRings() {
   let attempts = 0;
- 
+  //when the number of generated rings or the number of attempts reaches the upper limit, it will stop generating
   while (colorfulRings.length < ringNumbers && attempts < maxAttempts) {
-   
+    // random radius and position
     let x = random(canvasSize);
     let y = random(canvasSize);
     let size = random(minRadius, maxRadius);
 
     let overlapping = false;
-    // Check if the new circle overlaps with any existing ones
+    // detect overlapping
     for (let other of colorfulRings) {
       let d = dist(x, y, other.xpos, other.ypos);
       if (d < size * 0.25 + other.size * 0.25) {
@@ -47,7 +58,7 @@ function generateRandomRings() {
       }
     }
 
-    // If not overlapping, add the new ring to the array
+    // if it's not overlapping, add it into the array
     if (!overlapping) {
       colorfulRings.push(new ColorfulRing(x, y, size));
     } else {
@@ -56,9 +67,14 @@ function generateRandomRings() {
   }
 }
 
-//  Display all rings on the canvas
+// show all the rings
 function showAllRings() {
-  for (let ring of colorfulRings) {
-    ring.show();
-  }
-}
+  for (let i = 0; i < colorfulRings.length; i++) {
+    let ring = colorfulRings[i];
+    
+    // rotate and scale
+    let rot = sin(frameCount * 0.01 + i) * 0.5;
+    let scaleFactor = 0.9 + 0.1 * sin(frameCount * 0.02 + i * 2);
+    
+    ring.show(rot, scaleFactor);
+}}
